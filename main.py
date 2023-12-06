@@ -11,6 +11,7 @@ pygame.display.set_icon(icon)
 scenes = {
    "MAIN_MENU": 1,
    "GAME":      2,
+   "GAME_OVER": 3
 }
 
 screenWidth = 1200
@@ -27,11 +28,13 @@ objects = []
 
 screen = pygame.display.set_mode((screenWidth, screenHeight))
 clock = pygame.time.Clock()
-scoreFont = pygame.font.SysFont("Montsserat Thin Bold", 100)
-mainFont = pygame.font.SysFont("Montsserat Regular", 150)
+scoreFont = pygame.font.Font("fonts\MontsseratRegular.ttf", 80)
+mainFont = pygame.font.Font("fonts\MontsseratRegular.ttf", 100)
+gameoverFont = pygame.font.Font("fonts\FredokaOne.ttf", 80)
 
 mainMenuBackgroundSprite = pygame.image.load("assets/mainmenu.png")
 gamebackgroundSprite = pygame.transform.scale(pygame.image.load("assets/background.jpg"), (screenWidth, screenHeight))
+gameoverSprite = pygame.image.load("assets/gameover.png")
 heartSprite = pygame.image.load("assets/heart.png")
 
 
@@ -131,12 +134,11 @@ while running:
       running = False
 
   if scene == scenes["MAIN_MENU"]:
-    screen.blit(mainMenuBackgroundSprite, (0,0))
-    if screenWidth/2-750/2 < pygame.mouse.get_pos()[0] < screenWidth/2+750/2 and pygame.mouse.get_pressed()[0] and 450 < pygame.mouse.get_pos()[1] < 550:
+    screen.blit(mainMenuBackgroundSprite, (0, 0))
+    if 225 < pygame.mouse.get_pos()[0] < 975 and pygame.mouse.get_pressed()[0] and 450 < pygame.mouse.get_pos()[1] < 550:
       scene = scenes["GAME"]
     if 225 < pygame.mouse.get_pos()[0] < 975 and pygame.mouse.get_pressed()[0] and 600 < pygame.mouse.get_pos()[1] < 700:
-      running = False
-     
+      running = False   
 
   if scene == scenes["GAME"]:
     n = score//10 + 1
@@ -158,9 +160,7 @@ while running:
 
     player.render() 
     if health == 0:
-      scene = scenes["MAIN_MENU"]
-      health = 3
-      score = 0
+      scene = scenes["GAME_OVER"]
       objects = []
     
     for i in range(1, health + 1):
@@ -169,6 +169,18 @@ while running:
     highScoretext = scoreFont.render(f"High: {str(highScore)}", True, (0, 0, 0))
     screen.blit(text, (screenWidth/2-text.get_width()/2, 20))
     screen.blit(highScoretext, (20, 20))
+
+  if scene == scenes["GAME_OVER"]:
+    screen.blit(gameoverSprite, (0, 0))
+    gameoverText = gameoverFont.render(f"Score: {score}", True, (0, 0, 0))
+    screen.blit(gameoverText, (screenWidth/2 - gameoverText.get_width()/2, 200))
+    if 225 < pygame.mouse.get_pos()[0] < 975 and pygame.mouse.get_pressed()[0] and 450 < pygame.mouse.get_pos()[1] < 550:
+      health = 3
+      score = 0
+      scene = scenes["GAME"]
+    if 225 < pygame.mouse.get_pos()[0] < 975 and pygame.mouse.get_pressed()[0] and 600 < pygame.mouse.get_pos()[1] < 700:
+      running = False 
+
 
   pygame.display.flip()
   clock.tick(120)
