@@ -4,6 +4,10 @@ import random
 pygame.init()
 pygame.font.init()
 
+icon = pygame.transform.scale(pygame.image.load("assets/playerdefault.png"), (32, 32))
+pygame.display.set_caption("SKY harvest")
+pygame.display.set_icon(icon)
+
 scenes = {
    "MAIN_MENU": 1,
    "GAME":      2,
